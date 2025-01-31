@@ -1,6 +1,11 @@
 const express = require('express');
 const Post = require('../models/Post');
 const verifyToken = require('../middleware/auth');
+const {
+  postValidation,
+  updatePostValidation,
+  validate,
+} = require('../middlewares/validation');
 
 const router = express.Router();
 
@@ -29,7 +34,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, validate(postValidation), async (req, res) => {
   const { title, content } = req.body;
 
   try {
@@ -153,26 +158,31 @@ router.get('/:id', async (req, res) => {
  *       500:
  *         description: Server error
  */
-router.put('/:id', verifyToken, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+router.put(
+  '/:id',
+  verifyToken,
+  validate(updatePostValidation),
+  async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id);
+      if (!post) return res.status(404).json({ message: 'Post not found' });
 
-    // Check if the user owns the post
-    if (post.author.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
+      // Check if the user owns the post
+      if (post.author.toString() !== req.user.id) {
+        return res.status(403).json({ message: 'Not authorized' });
+      }
+
+      // Update post
+      post.title = req.body.title || post.title;
+      post.content = req.body.content || post.content;
+      await post.save();
+
+      res.json(post);
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
     }
-
-    // Update post
-    post.title = req.body.title || post.title;
-    post.content = req.body.content || post.content;
-    await post.save();
-
-    res.json(post);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
   }
-});
+);
 
 /**
  * @swagger

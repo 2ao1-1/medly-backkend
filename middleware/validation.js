@@ -18,6 +18,17 @@ const loginValidation = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const postValidation = Joi.object({
+  title: Joi.string().min(3).max(100).required(),
+  content: Joi.string().min(10).required(),
+});
+
+// Update Post Validation (Optional Fields)
+const updatePostValidation = Joi.object({
+  title: Joi.string().min(3).max(100),
+  content: Joi.string().min(10),
+});
+
 // Validate function middleware
 const validate = (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body, { abortEarly: false });
