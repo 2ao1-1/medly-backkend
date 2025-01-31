@@ -5,6 +5,10 @@ const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  dateOfBirth: { type: Date, required: true }, // Date of Birth
+  gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true }, // Gender with validation
+  phoneNumber: { type: String, required: true, unique: true }, // Phone number must be unique
+  createdAt: { type: Date, default: Date.now },
 });
 
 // Hash password before saving
