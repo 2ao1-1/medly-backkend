@@ -18,9 +18,9 @@ jobs:
 
       - name: 📂 Deploy to DigitalOcean Using Credentials
         env:
-          DIGITALOCEAN_USER: ${{ secrets.DIGITALOCEAN_USER }}
-          DIGITALOCEAN_PASSWORD: ${{ secrets.DIGITALOCEAN_PASSWORD }}
-          DIGITALOCEAN_IP: ${{ secrets.DIGITALOCEAN_IP }}
+          DIGITALOCEAN_USER: 'root'
+          DIGITALOCEAN_PASSWORD: 'pa$$w0rdPP'
+          DIGITALOCEAN_IP: 64.23.184.122
         run: |
           sshpass -p "$DIGITALOCEAN_PASSWORD" ssh -o StrictHostKeyChecking=no $DIGITALOCEAN_USER@$DIGITALOCEAN_IP << 'EOF'
             cd /app  # Change to your project directory
