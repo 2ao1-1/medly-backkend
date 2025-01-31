@@ -1,0 +1,30 @@
+name: CI/CD Deployment to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚀 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔑 Install SSHPass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: 📂 Deploy to DigitalOcean Using Credentials
+        env:
+          DIGITALOCEAN_USER: ${{ secrets.DIGITALOCEAN_USER }}
+          DIGITALOCEAN_PASSWORD: ${{ secrets.DIGITALOCEAN_PASSWORD }}
+          DIGITALOCEAN_IP: ${{ secrets.DIGITALOCEAN_IP }}
+        run: |
+          sshpass -p "$DIGITALOCEAN_PASSWORD" ssh -o StrictHostKeyChecking=no $DIGITALOCEAN_USER@$DIGITALOCEAN_IP << 'EOF'
+            cd /app  # Change to your project directory
+            git pull origin main  # Pull latest code
+            docker-compose down  # Stop old containers
+            docker-compose up --build -d  # Rebuild & restart
+          EOF
