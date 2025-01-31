@@ -4,7 +4,31 @@ const verifyToken = require('../middleware/auth');
 
 const router = express.Router();
 
-// Create a new post (Protected)
+/**
+ * @swagger
+ * /api/posts:
+ *   post:
+ *     summary: Create a new post
+ *     tags: [Posts]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *       401:
+ *         description: Unauthorized
+ */
 router.post('/', verifyToken, async (req, res) => {
   const { title, content } = req.body;
 
@@ -22,7 +46,16 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
-// Get all posts
+/**
+ * @swagger
+ * /api/posts:
+ *   get:
+ *     summary: Get all posts
+ *     tags: [Posts]
+ *     responses:
+ *       200:
+ *         description: Returns a list of posts
+ */
 router.get('/', async (req, res) => {
   try {
     const posts = await Post.find().populate('author', 'username email');
