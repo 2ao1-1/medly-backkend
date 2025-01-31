@@ -5,7 +5,7 @@ const {
   postValidation,
   updatePostValidation,
   validate,
-} = require('../middlewares/validation');
+} = require('../middleware/validation');
 
 const router = express.Router();
 
